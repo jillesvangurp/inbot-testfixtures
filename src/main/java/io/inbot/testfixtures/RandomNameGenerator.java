@@ -10,14 +10,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RandomNameGenerator {
 
-    private final List<String> firstNames=new ArrayList<>();
-    private final List<String> lastNames=new ArrayList<>();
+    // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
+    private final List<String> firstNames=Collections.synchronizedList(new ArrayList<>());
+    private final List<String> lastNames=Collections.synchronizedList(new ArrayList<>());
 
-    int firstNameIndex=0;
-    int lastNameIndex=0;
+    // use AtomicInteger so multiple threads can use this without getting the same index
+    private final AtomicInteger firstNameIndex=new AtomicInteger(0);
+    private final AtomicInteger lastNameIndex=new AtomicInteger(0);
 
     public RandomNameGenerator(long seed) {
         try {
@@ -41,10 +44,12 @@ public class RandomNameGenerator {
     }
 
     public String nextFirstName() {
-        return firstNames.get((firstNameIndex++ % firstNames.size()));
+        int counter = firstNameIndex.incrementAndGet();
+        int index = counter % firstNames.size();
+        return firstNames.get(index);
     }
 
     public String nextLastName() {
-        return lastNames.get((lastNameIndex++ % lastNames.size()));
+        return lastNames.get((lastNameIndex.incrementAndGet() % lastNames.size()));
     }
 }

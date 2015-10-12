@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.inbot</groupId>
     <artifactId>inbot-testfixtures</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>inbot-testfixtures</name>
     <description>Helper class for human readable randmized names and email addresses</description>

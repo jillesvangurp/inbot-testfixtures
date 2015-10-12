@@ -14,7 +14,7 @@ public class RandomNameGeneratorTest {
 
     @BeforeMethod
     public void before() {
-        randomNameGenerator = new RandomNameGenerator(666);
+        randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
     }
 
     public void shouldGenerateRandomNamesWithoutDuplicates() {
@@ -40,6 +40,29 @@ public class RandomNameGeneratorTest {
         }
         assertThat(seen.size()).isLessThan(10000);
         assertThat(seen.size()).isGreaterThan(5000);
+    }
+
+    public void shouldGenerateTheSameNamesWithTheSameSeed() {
+        RandomNameGenerator r1 = new RandomNameGenerator(42);
+        RandomNameGenerator r2 = new RandomNameGenerator(42);
+        for(int i=0;i<100;i++) {
+            assertThat(r1.nextFirstName()).isEqualTo(r2.nextFirstName());
+            assertThat(r1.nextLastName()).isEqualTo(r2.nextLastName());
+        }
+    }
+
+    public void shouldGenerate1MUniqueNameCombinations() {
+        Set<String> seen=new HashSet<>();
+        int count=0;
+        while(count < 1000000) {
+            String name = randomNameGenerator.nextFirstName() + " " + randomNameGenerator.nextLastName();
+            if(seen.contains(name)) {
+                throw new IllegalStateException("this should not happen the first 1M combinations");
+            } else {
+                seen.add(name);
+            }
+            count++;
+        }
     }
 
 }

@@ -4,20 +4,13 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@Test
+@Test(invocationCount=10)
 public class RandomNameGeneratorTest {
 
-    private RandomNameGenerator randomNameGenerator;
-
-    @BeforeMethod
-    public void before() {
-        randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
-    }
-
     public void shouldGenerateRandomNamesWithoutDuplicates() {
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
         Set<String> seen=new HashSet<>();
         for(int i=0;i<1000;i++) {
             String first = randomNameGenerator.nextFirstName();
@@ -34,6 +27,7 @@ public class RandomNameGeneratorTest {
     }
 
     public void shouldRecycleNamesWhenTheyRunOut() {
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
         Set<String> seen=new HashSet<>();
         for(int i=0;i<20000;i++) {
             seen.add(randomNameGenerator.nextFirstName());
@@ -52,14 +46,19 @@ public class RandomNameGeneratorTest {
     }
 
     public void shouldGenerate1MUniqueNameCombinations() {
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
         Set<String> seen=new HashSet<>();
         int count=0;
         while(count < 1000000) {
-            String name = randomNameGenerator.nextFirstName() + " " + randomNameGenerator.nextLastName();
-            if(seen.contains(name)) {
-                throw new IllegalStateException("this should not happen the first 1M combinations");
-            } else {
-                seen.add(name);
+            String firstName = randomNameGenerator.nextFirstName();
+            String lastName = randomNameGenerator.nextLastName();
+            if(firstName.equals(lastName)) {
+                String name = firstName + " " + lastName;
+                if(seen.contains(name)) {
+                    throw new IllegalStateException("this should not happen the first 1M combinations but happened after " + count);
+                } else {
+                    seen.add(name);
+                }
             }
             count++;
         }

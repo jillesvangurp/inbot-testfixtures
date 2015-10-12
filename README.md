@@ -2,6 +2,18 @@
 
 This library uses two csvs with first and last names to implement a simple pseudo random name generator for names that generates human readable names without generating duplicate first name last name combinations until you have generated millions of first and last name combinations.
 
+# Install from maven cental
+
+```xml
+<dependency>
+  <groupId>io.inbot</groupId>
+  <artifactId>inbot-testfixtures</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+# Usage
+
 To use simply instantiate with a seed.
 
 ```

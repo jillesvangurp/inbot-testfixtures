@@ -22,12 +22,10 @@ public class RandomNameGenerator {
 
     public RandomNameGenerator(long seed) {
         try {
-
-
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("firstnames.csv"), StandardCharsets.UTF_8))) {
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/firstnames.csv"), StandardCharsets.UTF_8))) {
                 br.lines().forEach(line -> firstNames.add(line.trim()));
             }
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("lastnames.csv"), StandardCharsets.UTF_8))) {
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/lastnames.csv"), StandardCharsets.UTF_8))) {
                 br.lines().forEach(line -> lastNames.add(line.trim()));
             }
             Random random = new Random(seed);

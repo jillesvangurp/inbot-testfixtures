@@ -1,11 +1,9 @@
 package io.inbot.testfixtures;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,23 +22,20 @@ public class RandomNameGenerator {
 
     public RandomNameGenerator(long seed) {
         try {
-            Files.lines(getResourcePath("firstnames.csv")).forEach(line -> {
-                firstNames.add(line.trim());
-            });
-            Files.lines(getResourcePath("lastnames.csv")).forEach(line -> {
-                lastNames.add(line.trim());
-            });
+
+
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("firstnames.csv"), StandardCharsets.UTF_8))) {
+                br.lines().forEach(line -> firstNames.add(line.trim()));
+            }
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("lastnames.csv"), StandardCharsets.UTF_8))) {
+                br.lines().forEach(line -> lastNames.add(line.trim()));
+            }
             Random random = new Random(seed);
             Collections.shuffle(firstNames, random);
             Collections.shuffle(lastNames, random);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private static Path getResourcePath(String resourceName) throws URISyntaxException {
-        URL url = RandomNameGenerator.class.getClassLoader().getResource(resourceName);
-        return Paths.get(url.toURI());
     }
 
     public String nextFirstName() {

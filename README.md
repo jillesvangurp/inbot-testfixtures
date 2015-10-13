@@ -10,7 +10,7 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 <dependency>
   <groupId>io.inbot</groupId>
   <artifactId>inbot-testfixtures</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
@@ -31,3 +31,13 @@ The library loads the csvs in memory and shuffles the two lists using the seed. 
 With 5000+ first names and 88000+ last names that means you get at leaast 88000 unique first name last name combinations before it starts recycling the names. However, because the list lengths are different, you merely get different combinations of the same names after that. In practice, you can generate many millions of unique first name last name combinations before encountering duplicates.
 
 Because the RandomNameGenerator is instantiated with a seed, you can trigger the same order of names by re-instantiating with the same seed. This is important if you want to replay tests when they break.
+
+# Release notes
+
+1.2
+  - add support for random company names based on Nasdaq registered companies
+1.1
+  - resolve classloading issues with loading the csv
+  - resolve concurrency issues with running the tests
+1.0
+  - initial release

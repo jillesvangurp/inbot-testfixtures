@@ -4,9 +4,10 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
-@Test(invocationCount=10)
+@Test(invocationCount=2)
 public class RandomNameGeneratorTest {
 
     public void shouldGenerateRandomNamesWithoutDuplicates() {
@@ -64,4 +65,21 @@ public class RandomNameGeneratorTest {
         }
     }
 
+    public void shouldGenerateCompanyNames() {
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
+        Set<String> seen=new HashSet<>();
+        for(int i=0;i<1000;i++) {
+            String name = randomNameGenerator.nextCompanyName();
+            seen.add(name);
+        }
+        assertThat(seen.size()).isEqualTo(1000);
+    }
+
+    public void shouldGeneratePersonFields() {
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(System.currentTimeMillis());
+        for(int i=0;i<1000;i++) {
+            System.out.println(StringUtils.join(randomNameGenerator.nextPersonFields(), ','));
+        }
+
+    }
 }

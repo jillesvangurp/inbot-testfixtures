@@ -10,7 +10,7 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 <dependency>
   <groupId>io.inbot</groupId>
   <artifactId>inbot-testfixtures</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
 </dependency>
 ```
 
@@ -34,6 +34,8 @@ Because the RandomNameGenerator is instantiated with a seed, you can trigger the
 
 # Release notes
 
+- 1.3
+  - improve random email addresses by filtering out non alphanumeric characters
 - 1.2
   - add support for random company names based on Nasdaq registered companies
 - 1.1

@@ -1,6 +1,6 @@
 # Inbot Testfixtures
 
-This library uses two csvs with first and last names to implement a simple pseudo random name generator for names that generates human readable names without generating duplicate first name last name combinations until you have generated millions of first and last name combinations.
+This library uses csvs with companies, first and last names to implement a simple pseudo random name generator for names that generates human readable names for people and companies without generating duplicate names until you have generated millions of first and last name combinations.
 
 This is perfect for unit tests where you want to guarantee that there are no duplicate names during the test execution.
 
@@ -34,10 +34,10 @@ Because the RandomNameGenerator is instantiated with a seed, you can trigger the
 
 # Release notes
 
-1.2
+- 1.2
   - add support for random company names based on Nasdaq registered companies
-1.1
+- 1.1
   - resolve classloading issues with loading the csv
   - resolve concurrency issues with running the tests
-1.0
+- 1.0
   - initial release

@@ -34,6 +34,8 @@ Because the RandomNameGenerator is instantiated with a seed, you can trigger the
 
 # Release notes
 
+- 1.4
+  - Remove the last name Ternullo due to the occurence of 'null' in this string. This messes up our null checks in the Inbot tests occasionally.
 - 1.3
   - improve random email addresses by filtering out non alphanumeric characters
 - 1.2

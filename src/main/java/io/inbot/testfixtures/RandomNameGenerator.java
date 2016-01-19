@@ -83,7 +83,7 @@ public class RandomNameGenerator {
         String ln = nextLastName();
         String company=nextCompanyName();
         String domainName=company.toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "") + ".com";
-        String userName=(fn+"."+ln).toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "");
+        String userName=(fn+"."+ln).toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "").replaceAll("null", "n_ll"); // Galen Ullrich -> galenullrich ;-)
         String email=userName+"@"+domainName;
         return new String[] {fn,ln,company,domainName,email};
     }

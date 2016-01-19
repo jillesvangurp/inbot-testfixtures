@@ -10,7 +10,7 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 <dependency>
   <groupId>io.inbot</groupId>
   <artifactId>inbot-testfixtures</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
 </dependency>
 ```
 
@@ -33,7 +33,8 @@ With 5000+ first names and 88000+ last names that means you get at leaast 88000 
 Because the RandomNameGenerator is instantiated with a seed, you can trigger the same order of names by re-instantiating with the same seed. This is important if you want to replay tests when they break.
 
 # Release notes
-
+- 1.6
+  -  Username concatenated of Galen Ullrich ends up containing null as a substring. Fixed it with a simple replaceAll null -> n_ll.
 - 1.5
   - Remove 'Null' and 'Nulle' as valid last names :-)
 - 1.4

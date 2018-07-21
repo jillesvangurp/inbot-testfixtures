@@ -66,20 +66,26 @@ if (project.hasProperty("ossrhUsername")) {
                     name 'Inbot Testfixtures'
                     packaging 'jar'
                     // optionally artifactId can be defined here
-                    description 'Randomized names for companies and persons for use in tests'
-                    url 'https://github.com/Inbot/inbot-testfixtures'
+                    description 'Helper class for human readable randmized names and email addresses'
+                    url 'https://github.com/inbot/inbot-testfixtures'
 
                     scm {
                         connection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
                         developerConnection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
-                        url 'https://github.com/Inbot/inbot-testfixtures'
+                        url 'git://git@github.com:inbot/inbot-testfixtures.git'
                     }
 
                     licenses {
                         license {
-                            name 'MIT License'
-                            url 'https://github.com/Inbot/inbot-testfixtures/blob/master/LICENSE'
+                            name 'MIT license'
+                            url 'https://github.com/inbot/inbot-testfixtures/blob/master/LICENSE'
+                            distribution 'repo'
                         }
+                    }
+
+                    organization {
+                        name 'Inbot'
+                        url 'http://inbot.io'
                     }
 
                     developers {

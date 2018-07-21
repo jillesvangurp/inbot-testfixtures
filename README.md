@@ -34,6 +34,10 @@ With 5000+ first names and 88000+ last names that means you get at least 88000 u
 Because the RandomNameGenerator is instantiated with a seed, you can trigger the same order of names by re-instantiating with the same seed. This is important if you want to replay tests when they break.
 
 # Release notes
+- 1.8 some long overdue maintenance and close some issues
+  - Finally add support for a Person object instead of an array.
+  - Implement ability to re-seed using a new `shuffle` method
+  - Migrate the project to gradle, update dependencies
 - 1.7
   - Merge pull request with Turkish and other names.
 - 1.6

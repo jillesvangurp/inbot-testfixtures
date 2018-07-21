@@ -1,15 +1,9 @@
-buildscript {
-    ext.kotlinVersion = '1.2.51'
-    ext.ossrhUsername = 'user'
-    ext.ossrhPassword = 'password'
-}
-
-
 apply plugin: 'java'
 apply plugin: 'maven'
 
 if (project.hasProperty("signing.keyId")) {
     // GRADLE_USER_HOME=/Users/jillesvangurp
+    // add a gradle.properties as described here:
     apply plugin: 'signing'
     signing {
         sign configurations.archives
@@ -18,14 +12,14 @@ if (project.hasProperty("signing.keyId")) {
 
 group = 'io.inbot'
 archivesBaseName = "inbot-testfixtures"
-version = '1.7'
+version = '1.8'
 
 description = """Randomized names for companies and persons for use in tests"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 task javadocJar(type: Jar) {
@@ -54,54 +48,56 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+if (project.hasProperty("ossrhUsername")) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
 
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
 
-      pom.project {
-        name 'Inbot Testfixtures'
-        packaging 'jar'
-        // optionally artifactId can be defined here
-        description 'Randomized names for companies and persons for use in tests'
-        url 'https://github.com/Inbot/inbot-testfixtures'
+                pom.project {
+                    name 'Inbot Testfixtures'
+                    packaging 'jar'
+                    // optionally artifactId can be defined here
+                    description 'Randomized names for companies and persons for use in tests'
+                    url 'https://github.com/Inbot/inbot-testfixtures'
 
-        scm {
-          connection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
-          developerConnection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
-          url 'https://github.com/Inbot/inbot-testfixtures'
+                    scm {
+                        connection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
+                        developerConnection 'scm:git:git@github.com:inbot/inbot-testfixtures.git'
+                        url 'https://github.com/Inbot/inbot-testfixtures'
+                    }
+
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'https://github.com/Inbot/inbot-testfixtures/blob/master/LICENSE'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'jillesvangurp'
+                            name 'Jilles van Gurp'
+                        }
+                    }
+                }
+            }
         }
-
-        licenses {
-          license {
-            name 'MIT License'
-            url 'https://github.com/Inbot/inbot-testfixtures/blob/master/LICENSE'
-          }
-        }
-
-        developers {
-          developer {
-            id 'jillesvangurp'
-            name 'Jilles van Gurp'
-          }
-        }
-      }
     }
-  }
 }
 
 repositories {
-     maven { url "https://oss.sonatype.org/content/groups/public/" }
-     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://repo.maven.apache.org/maven2" }
 }
 
 dependencies {

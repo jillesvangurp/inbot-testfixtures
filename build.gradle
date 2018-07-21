@@ -2,8 +2,32 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 if (project.hasProperty("signing.keyId")) {
-    // GRADLE_USER_HOME=/Users/jillesvangurp
-    // add a gradle.properties as described here:
+
+/*
+   fix ~/gradle.properties
+        # lass eight chars of the key you get with gpg --list-keys
+        signing.keyId=29B280D7
+        signing.password=XXXXXXX
+        signing.secretKeyRingFile=/Users/jillesvangurp/.gnupg/secring.gpg
+
+        ossrhUsername=jillesvangurp
+        ossrhPassword=XXXXXXX
+
+   export GRADLE_USER_HOME=/Users/jillesvangurp
+
+   to release:
+   bump the version number below
+   gradle clean
+   gradle build
+   gradle uploadArchives
+
+   goto https://oss.sonatype.org/#stagingRepositories
+   find the newly uploaded repo
+   close it, wait for it ... refresh .... release .... wait some more, shit should be rolling out
+
+   set snapshot version for next version
+ */
+
     apply plugin: 'signing'
     signing {
         sign configurations.archives
@@ -12,7 +36,7 @@ if (project.hasProperty("signing.keyId")) {
 
 group = 'io.inbot'
 archivesBaseName = "inbot-testfixtures"
-version = '1.8'
+version = '1.9-SNAPSHOT'
 
 description = """Randomized names for companies and persons for use in tests"""
 

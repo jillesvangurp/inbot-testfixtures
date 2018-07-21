@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,9 +25,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RandomNameGenerator {
 
     // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
-    private final List<String> firstNames=Collections.synchronizedList(new ArrayList<>());
-    private final List<String> lastNames=Collections.synchronizedList(new ArrayList<>());
-    private final List<String> companies=Collections.synchronizedList(new ArrayList<>());
+    private final List<String> firstNames;
+    private final List<String> lastNames;
+    private final List<String> companies;
 
     // use AtomicInteger so multiple threads can use this without getting the same index
     private final AtomicInteger firstNameIndex=new AtomicInteger(0);
@@ -37,15 +36,9 @@ public class RandomNameGenerator {
 
     public RandomNameGenerator(long seed) {
         try {
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/firstnames.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> firstNames.add(line.trim()));
-            }
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/lastnames.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> lastNames.add(line.trim()));
-            }
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/companies.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> companies.add(line.trim()));
-            }
+            firstNames=loadNames("inbot-testfixtures/firstnames.csv");
+            lastNames=loadNames("inbot-testfixtures/lastnames.csv");
+            companies=loadNames("inbot-testfixtures/companies.csv");
 
             Random random = new Random(seed);
             Collections.shuffle(firstNames, random);
@@ -54,6 +47,15 @@ public class RandomNameGenerator {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private List<String> loadNames(String resource) throws IOException {
+        List<String> names = Collections.synchronizedList(new ArrayList<>());
+        // use classloader that loaded the jar with this class to ensure we can get the csvs
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream(resource), StandardCharsets.UTF_8))) {
+            br.lines().map(String::trim).filter(line -> line.length()>0).forEach(names::add);
+        }
+        return names;
     }
 
     public String nextFirstName() {
@@ -78,13 +80,13 @@ public class RandomNameGenerator {
      * Useful to generate random sets of person fields and some derived fields.
      * @return array of first name, lastname, company name, domain name, email address
      */
+    @Deprecated // use getNextPerson, keeping this because of legacy tests
     public String[] nextPersonFields() {
-        String fn = nextFirstName();
-        String ln = nextLastName();
-        String company=nextCompanyName();
-        String domainName=company.toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "") + ".com";
-        String userName=(fn+"."+ln).toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "").replaceAll("null", "n_ll"); // Galen Ullrich -> galenullrich ;-)
-        String email=userName+"@"+domainName;
-        return new String[] {fn,ln,company,domainName,email};
+        Person person = getNextPerson();
+        return new String[] {person.getFirstName(),person.getLastName(),person.getCompany(),person.getDomainName(),person.email()};
+    }
+
+    public Person getNextPerson() {
+        return new Person(nextFirstName(), nextLastName(), nextCompanyName());
     }
 }

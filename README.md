@@ -10,7 +10,7 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 <dependency>
   <groupId>io.inbot</groupId>
   <artifactId>inbot-testfixtures</artifactId>
-  <version>1.6</version>
+  <version>1.7</version>
 </dependency>
 ```
 
@@ -22,17 +22,20 @@ To use simply instantiate with a seed.
 RandomNameGenerator randomNameGenerator = new RandomNameGenerator(666);
 String first = randomNameGenerator.nextFirstName();
 String last = randomNameGenerator.nextLastName();
+String company = randomNameGenerator.nextCompanyName();
 ```
 
 # How it works
 
 The library loads the csvs in memory and shuffles the two lists using the seed. It maintains an index to cycle through the lists so it is guaranteed to not generate duplicate names until it runs through the entire list. After that, it simply cycles through from the beginning.
 
-With 5000+ first names and 88000+ last names that means you get at leaast 88000 unique first name last name combinations before it starts recycling the names. However, because the list lengths are different, you merely get different combinations of the same names after that. In practice, you can generate many millions of unique first name last name combinations before encountering duplicates.
+With 5000+ first names and 88000+ last names that means you get at least 88000 unique first name last name combinations before it starts recycling the names. However, because the list lengths are different, you merely get different combinations of the same names after that. In practice, you can generate many millions of unique first name last name combinations before encountering duplicates.
 
 Because the RandomNameGenerator is instantiated with a seed, you can trigger the same order of names by re-instantiating with the same seed. This is important if you want to replay tests when they break.
 
 # Release notes
+- 1.7
+  - Merge pull request with Turkish and other names.
 - 1.6
   -  Username concatenated of Galen Ullrich ends up containing null as a substring. Fixed it with a simple replaceAll null -> n_ll.
 - 1.5

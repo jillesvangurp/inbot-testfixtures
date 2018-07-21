@@ -1,13 +1,13 @@
 package io.inbot.testfixtures;
 
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
-@Test(invocationCount=2)
+@Test
 public class RandomNameGeneratorTest {
 
     public void shouldGenerateRandomNamesWithoutDuplicates() {

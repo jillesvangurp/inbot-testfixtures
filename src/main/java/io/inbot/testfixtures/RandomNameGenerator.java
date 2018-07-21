@@ -24,38 +24,49 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RandomNameGenerator {
 
-    // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
-    private final List<String> firstNames;
-    private final List<String> lastNames;
-    private final List<String> companies;
+    private List<String> firstNames;
+    private List<String> lastNames;
+    private List<String> companies;
+    private final List<String> firstNamesOriginal;
+    private final List<String> lastNamesOriginal;
+    private final List<String> companiesOriginal;
 
     // use AtomicInteger so multiple threads can use this without getting the same index
     private final AtomicInteger firstNameIndex=new AtomicInteger(0);
     private final AtomicInteger lastNameIndex=new AtomicInteger(0);
     private final AtomicInteger companyIndex=new AtomicInteger(0);
 
-    public RandomNameGenerator(long seed) {
-        try {
-            firstNames=loadNames("inbot-testfixtures/firstnames.csv");
-            lastNames=loadNames("inbot-testfixtures/lastnames.csv");
-            companies=loadNames("inbot-testfixtures/companies.csv");
-
-            Random random = new Random(seed);
-            Collections.shuffle(firstNames, random);
-            Collections.shuffle(lastNames, random);
-            Collections.shuffle(companies, random);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+    public RandomNameGenerator(List<String> firstNames, List<String> lastNames, List<String> companies) {
+        firstNamesOriginal=firstNames;
+        lastNamesOriginal=lastNames;
+        companiesOriginal=companies;
+        shuffle(new Random());
     }
 
-    private List<String> loadNames(String resource) throws IOException {
-        List<String> names = Collections.synchronizedList(new ArrayList<>());
+    public RandomNameGenerator(long seed) {
+        this(loadNames("inbot-testfixtures/firstnames.csv"),loadNames("inbot-testfixtures/lastnames.csv"),loadNames("inbot-testfixtures/companies.csv"));
+        shuffle(new Random(seed));
+    }
+
+    public void shuffle(Random random) {
+        // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
+        firstNames = Collections.synchronizedList(new ArrayList<>(firstNamesOriginal));
+        lastNames = Collections.synchronizedList(new ArrayList<>(lastNamesOriginal));
+        companies = Collections.synchronizedList(new ArrayList<>(companiesOriginal));
+        Collections.shuffle(firstNames, random);
+        Collections.shuffle(lastNames, random);
+        Collections.shuffle(companies, random);
+    }
+
+    private static List<String> loadNames(String resource) {
+        List<String> names = new ArrayList<>();
         // use classloader that loaded the jar with this class to ensure we can get the csvs
         try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream(resource), StandardCharsets.UTF_8))) {
             br.lines().map(String::trim).filter(line -> line.length()>0).forEach(names::add);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
-        return names;
+        return Collections.unmodifiableList(names);
     }
 
     public String nextFirstName() {

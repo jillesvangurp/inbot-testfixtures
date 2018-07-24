@@ -14,6 +14,8 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 </dependency>
 ```
 
+# [License](LICENSE)
+
 # Usage
 
 To use simply instantiate with a seed.
@@ -34,6 +36,10 @@ With 5000+ first names and 88000+ last names that means you get at least 88000 u
 Because the RandomNameGenerator is instantiated with a seed, you can trigger the same order of names by re-instantiating with the same seed. This is important if you want to replay tests when they break.
 
 # Release notes
+- 1.9
+  - Merge pull request to fix some html escaped quotes in names
+  - Fix shuffle to also reset the index and add unit test for making sure using the same seed produces the same person.
+  - Rename two methods added in 1.8 for consistency.
 - 1.8 some long overdue maintenance and close some issues
   - Finally add support for a Person object instead of an array.
   - Implement ability to re-seed using a new `shuffle` method

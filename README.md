@@ -10,7 +10,7 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 <dependency>
   <groupId>io.inbot</groupId>
   <artifactId>inbot-testfixtures</artifactId>
-  <version>1.8</version>
+  <version>1.9</version>
 </dependency>
 ```
 
@@ -20,14 +20,14 @@ To use simply instantiate with a seed.
 
 ```
 RandomNameGenerator randomNameGenerator = new RandomNameGenerator(666);
-String first = randomNameGenerator.nextFirstName();
-String last = randomNameGenerator.nextLastName();
-String company = randomNameGenerator.nextCompanyName();
+
+Person p = randomNameGenerator.nextPerson();
+System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getCompany() + " " + p.getEmail());
 ```
 
 # How it works
 
-The library loads the csvs in memory and shuffles the two lists using the seed. It maintains an index to cycle through the lists so it is guaranteed to not generate duplicate names until it runs through the entire list. After that, it simply cycles through from the beginning.
+The library loads the csvs in memory and shuffles the two lists using the seed. Then every call to nextFirstName() gets the next name in the list. It maintains an index to cycle through the lists so it is guaranteed to not generate duplicate names until it runs through the entire list. After that, it simply cycles through from the beginning. If you want you can reshuffle the lists.
 
 With 5000+ first names and 88000+ last names that means you get at least 88000 unique first name last name combinations before it starts recycling the names. However, because the list lengths are different, you merely get different combinations of the same names after that. In practice, you can generate many millions of unique first name last name combinations before encountering duplicates.
 

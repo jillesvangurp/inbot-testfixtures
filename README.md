@@ -14,7 +14,9 @@ This is perfect for unit tests where you want to guarantee that there are no dup
 </dependency>
 ```
 
-# [License](LICENSE)
+# License
+
+[MIT License](LICENSE)
 
 # Usage
 

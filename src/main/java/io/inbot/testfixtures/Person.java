@@ -39,7 +39,7 @@ public class Person {
         return (getFirstName()+"."+getLastName()).toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "").replaceAll("null", "n_ll");
     }
 
-    public String email() {
+    public String getEmail() {
         return getUserName()+"@"+getDomainName();
     }
 }

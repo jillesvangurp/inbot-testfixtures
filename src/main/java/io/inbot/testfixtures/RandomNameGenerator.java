@@ -43,6 +43,11 @@ public class RandomNameGenerator {
         shuffle(new Random());
     }
 
+    public RandomNameGenerator(Random random) {
+        this(loadNames("inbot-testfixtures/firstnames.csv"),loadNames("inbot-testfixtures/lastnames.csv"),loadNames("inbot-testfixtures/companies.csv"));
+        shuffle(random);
+    }
+
     public RandomNameGenerator(long seed) {
         this(loadNames("inbot-testfixtures/firstnames.csv"),loadNames("inbot-testfixtures/lastnames.csv"),loadNames("inbot-testfixtures/companies.csv"));
         shuffle(new Random(seed));
@@ -51,11 +56,14 @@ public class RandomNameGenerator {
     public void shuffle(Random random) {
         // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
         firstNames = Collections.synchronizedList(new ArrayList<>(firstNamesOriginal));
-        lastNames = Collections.synchronizedList(new ArrayList<>(lastNamesOriginal));
-        companies = Collections.synchronizedList(new ArrayList<>(companiesOriginal));
         Collections.shuffle(firstNames, random);
+        firstNameIndex.set(0);
+        lastNames = Collections.synchronizedList(new ArrayList<>(lastNamesOriginal));
         Collections.shuffle(lastNames, random);
+        lastNameIndex.set(0);
+        companies = Collections.synchronizedList(new ArrayList<>(companiesOriginal));
         Collections.shuffle(companies, random);
+        companyIndex.set(0);
     }
 
     private static List<String> loadNames(String resource) {
@@ -93,11 +101,11 @@ public class RandomNameGenerator {
      */
     @Deprecated // use getNextPerson, keeping this because of legacy tests
     public String[] nextPersonFields() {
-        Person person = getNextPerson();
-        return new String[] {person.getFirstName(),person.getLastName(),person.getCompany(),person.getDomainName(),person.email()};
+        Person person = nextPerson();
+        return new String[] {person.getFirstName(),person.getLastName(),person.getCompany(),person.getDomainName(),person.getEmail()};
     }
 
-    public Person getNextPerson() {
+    public Person nextPerson() {
         return new Person(nextFirstName(), nextLastName(), nextCompanyName());
     }
 }

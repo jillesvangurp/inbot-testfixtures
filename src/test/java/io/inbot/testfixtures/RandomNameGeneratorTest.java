@@ -3,7 +3,10 @@ package io.inbot.testfixtures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
+
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
@@ -80,6 +83,16 @@ public class RandomNameGeneratorTest {
         for(int i=0;i<1000;i++) {
             System.out.println(StringUtils.join(randomNameGenerator.nextPersonFields(), ','));
         }
+    }
 
+    public void shouldGenerateSamePersonIfReshuffledWithSameSeed() {
+        long seed = RandomUtils.nextLong();
+        RandomNameGenerator randomNameGenerator = new RandomNameGenerator(seed);
+        Person p1 = randomNameGenerator.nextPerson();
+
+        randomNameGenerator.shuffle(new Random(seed));
+        Person p2 = randomNameGenerator.nextPerson();
+
+        assertThat(p1.getEmail()).isEqualTo(p2.getEmail());
     }
 }

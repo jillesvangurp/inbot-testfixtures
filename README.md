@@ -4,7 +4,7 @@ This library uses csvs with companies, first and last names to implement a simpl
 
 This is perfect for unit tests where you want to guarantee that there are no duplicate names during the test execution.
 
-# Install from maven cental
+# Install from maven central
 
 ```xml
 <dependency>

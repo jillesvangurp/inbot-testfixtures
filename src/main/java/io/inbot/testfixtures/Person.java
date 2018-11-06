@@ -42,4 +42,12 @@ public class Person {
     public String getEmail() {
         return getUserName()+"@"+getDomainName();
     }
+
+    @Override
+    public String toString() {
+        return "Person [ firstName=" + firstName + ", lastName=" + lastName + ", company=" + company + ", fullName()="
+                + getFullName() + ", company()=" + getCompany() + ", domainName()=" + getDomainName()
+                + ", userName()=" + getUserName() + ", email()=" + getEmail() + " ]";
+    }
+    
 }

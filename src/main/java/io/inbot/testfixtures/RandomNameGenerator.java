@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,35 +24,57 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RandomNameGenerator {
 
-    // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
-    private final List<String> firstNames=Collections.synchronizedList(new ArrayList<>());
-    private final List<String> lastNames=Collections.synchronizedList(new ArrayList<>());
-    private final List<String> companies=Collections.synchronizedList(new ArrayList<>());
+    private List<String> firstNames;
+    private List<String> lastNames;
+    private List<String> companies;
+    private final List<String> firstNamesOriginal;
+    private final List<String> lastNamesOriginal;
+    private final List<String> companiesOriginal;
 
     // use AtomicInteger so multiple threads can use this without getting the same index
     private final AtomicInteger firstNameIndex=new AtomicInteger(0);
     private final AtomicInteger lastNameIndex=new AtomicInteger(0);
     private final AtomicInteger companyIndex=new AtomicInteger(0);
 
-    public RandomNameGenerator(long seed) {
-        try {
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/firstnames.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> firstNames.add(line.trim()));
-            }
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/lastnames.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> lastNames.add(line.trim()));
-            }
-            try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream("inbot-testfixtures/companies.csv"), StandardCharsets.UTF_8))) {
-                br.lines().forEach(line -> companies.add(line.trim()));
-            }
+    public RandomNameGenerator(List<String> firstNames, List<String> lastNames, List<String> companies) {
+        firstNamesOriginal=firstNames;
+        lastNamesOriginal=lastNames;
+        companiesOriginal=companies;
+        shuffle(new Random());
+    }
 
-            Random random = new Random(seed);
-            Collections.shuffle(firstNames, random);
-            Collections.shuffle(lastNames, random);
-            Collections.shuffle(companies, random);
+    public RandomNameGenerator(Random random) {
+        this(loadNames("inbot-testfixtures/firstnames.csv"),loadNames("inbot-testfixtures/lastnames.csv"),loadNames("inbot-testfixtures/companies.csv"));
+        shuffle(random);
+    }
+
+    public RandomNameGenerator(long seed) {
+        this(loadNames("inbot-testfixtures/firstnames.csv"),loadNames("inbot-testfixtures/lastnames.csv"),loadNames("inbot-testfixtures/companies.csv"));
+        shuffle(new Random(seed));
+    }
+
+    public void shuffle(Random random) {
+        // use synchronizedList to avoid concurrency issues triggering premature duplicates (this actually happened with concurrent test execution)
+        firstNames = Collections.synchronizedList(new ArrayList<>(firstNamesOriginal));
+        Collections.shuffle(firstNames, random);
+        firstNameIndex.set(0);
+        lastNames = Collections.synchronizedList(new ArrayList<>(lastNamesOriginal));
+        Collections.shuffle(lastNames, random);
+        lastNameIndex.set(0);
+        companies = Collections.synchronizedList(new ArrayList<>(companiesOriginal));
+        Collections.shuffle(companies, random);
+        companyIndex.set(0);
+    }
+
+    private static List<String> loadNames(String resource) {
+        List<String> names = new ArrayList<>();
+        // use classloader that loaded the jar with this class to ensure we can get the csvs
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(RandomNameGenerator.class.getClassLoader().getResourceAsStream(resource), StandardCharsets.UTF_8))) {
+            br.lines().map(String::trim).filter(line -> line.length()>0).forEach(names::add);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+        return Collections.unmodifiableList(names);
     }
 
     public String nextFirstName() {
@@ -78,13 +99,13 @@ public class RandomNameGenerator {
      * Useful to generate random sets of person fields and some derived fields.
      * @return array of first name, lastname, company name, domain name, email address
      */
+    @Deprecated // use getNextPerson, keeping this because of legacy tests
     public String[] nextPersonFields() {
-        String fn = nextFirstName();
-        String ln = nextLastName();
-        String company=nextCompanyName();
-        String domainName=company.toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "") + ".com";
-        String userName=(fn+"."+ln).toLowerCase(Locale.ENGLISH).replaceAll("[^a-zA-Z0-9]*", "").replaceAll("null", "n_ll"); // Galen Ullrich -> galenullrich ;-)
-        String email=userName+"@"+domainName;
-        return new String[] {fn,ln,company,domainName,email};
+        Person person = nextPerson();
+        return new String[] {person.getFirstName(),person.getLastName(),person.getCompany(),person.getDomainName(),person.getEmail()};
+    }
+
+    public Person nextPerson() {
+        return new Person(nextFirstName(), nextLastName(), nextCompanyName());
     }
 }

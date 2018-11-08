@@ -45,9 +45,9 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person [ firstName=" + firstName + ", lastName=" + lastName + ", company=" + company + ", fullName()="
-                + getFullName() + ", company()=" + getCompany() + ", domainName()=" + getDomainName()
-                + ", userName()=" + getUserName() + ", email()=" + getEmail() + " ]";
+        return "Person [ firstName = '" + firstName + "', lastName = '" + lastName + "', userName = '" + getUserName()+ "', fullName = '"
+                + getFullName() + "', company = '" + getCompany() + "', domainName = '" + getDomainName()
+                + "', userName = '" + getUserName() + "', email = '" + getEmail() + "' ]";
     }
-    
+   
 }

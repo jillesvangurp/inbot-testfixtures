@@ -4,6 +4,10 @@ This library uses csvs with companies, first and last names to implement a simpl
 
 This is perfect for unit tests where you want to guarantee that there are no duplicate names during the test execution.
 
+# Repository move to jillesvangurp
+
+Inbot the company for which I developed this library originally is no more. So, I forked the repository and put it under my own account. I will likely change the name at some point. Any future releases will be done from here.
+
 # Install from maven central
 
 ```xml
